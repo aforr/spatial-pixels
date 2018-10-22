@@ -44,8 +44,8 @@ def cvx_solve(x,y,z):
     m   = np.kron(np.ones(num_centers), np.sum(np.mat(np.power(z, 2)), 1)) + \
     np.kron(np.ones([num_samples, 1]), np.sum(np.mat(np.power(x, 2)), 1).T) - 2 * z.dot(x.T)
 
-    t = cvx.Variable((num_grids,num_centers))
-    r = cvx.Variable((num_samples,num_centers))
+    t = cvx.Variable(num_grids,num_centers)
+    r = cvx.Variable(num_samples,num_centers)
 
     constraints = [t*np.ones([num_centers,1])==np.ones([num_grids,1]),
                    r*np.ones([num_centers,1])==np.ones([num_samples,1]),
@@ -53,12 +53,12 @@ def cvx_solve(x,y,z):
                    t>=0,r>=0]
     err = np.trace(yyt)-2*cvx.trace(t*xyt)
     for i in range(num_grids):
-        err += cvx.quad_form(t[i],xxt)
+        err += cvx.quad_form(t[i,:].T,xxt)
     # for i in range(num_centers):
     #     err += cvx.tv(t[:,i].reshape([size,size]))
     err += cvx.trace(r*m.T)
     prob = cvx.Problem(cvx.Minimize(err), constraints)
-    prob.solve(solver=cvx.MOSEK)
+    prob.solve()
 
     return t.value,r.value
 
