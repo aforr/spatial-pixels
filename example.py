@@ -64,9 +64,10 @@ verbose_cv,r_cv,t_cv,x_cv = Alter_cvx_siedel_tv(y,z,10,opts,verbose=True)
 
 distribution_x_a = np.mean(np.vstack((r_a,t_a)),0).getA1()
 distribution_x_av = np.mean(np.vstack((r_av,t_av)),0).getA1()
-distribution_x_c = np.mean(np.vstack((r_c,t_c)),0)
-distribution_x_o = np.mean(np.vstack((r_o,t_o)),0)
-distribution_x_cv = np.mean(np.vstack((r_cv,t_cv)),0)
+distribution_x_c = np.mean(np.vstack((r_c,t_c)),0).getA1()
+distribution_x_o = np.mean(np.vstack((r_o,t_o)),0).flatten()
+distribution_x_cv = np.mean(np.vstack((r_cv,t_cv)),0).getA1()
+
 
 err_o = measure_X(x_o,x,distribution_x_o,distribution_x)
 err_c = measure_X(x_c,x,distribution_x_c,distribution_x)
@@ -88,7 +89,7 @@ def obj1(t1,x1,r1):
     global y
     global z
     m=np.kron(np.ones(num_x), np.sum(np.mat(np.power(z, 2)), 1)) + \
-    np.kron(np.ones([np.size(z, 0), 1]), np.sum(np.mat(np.power(x1, 2)), 1).T) - 2 * z.dot(x1.T)
+       np.kron(np.ones([np.size(z, 0), 1]), np.sum(np.mat(np.power(x1, 2)), 1).T) - 2 * z.dot(x1.T)
     return li.norm(y-t1.dot(x1),'fro')**2+ np.sum(np.multiply(r1,m))
 
 
@@ -115,6 +116,7 @@ print(err_T_av)
 print(err_T_cv)
 print(err_T_a)
 print(err_T_c)
+
 
 #%% measure 3
 err_T_2_av = measure_T2(y,x_av,t_av,x,t)

@@ -59,7 +59,7 @@ def measure_T2(Y,X,T,X_real,T_real):
     '''
     num_T = np.size(T)
     num_T_real = np.size(T_real)
-    M = np.zeros(num_T,num_T_real)
+    M = np.zeros((num_T,num_T_real))
     num_Y = np.size(Y,0)
     num_X = np.size(X,0)
     num_x_real = np.size(X_real,0)
@@ -67,9 +67,10 @@ def measure_T2(Y,X,T,X_real,T_real):
         for j in range(num_X):
             for k in range(num_Y):
                 for l in range(num_x_real):
-                    M[i*num_X+j,k*num_x_real+l]=li.norm(Y[i]-Y[k],'fro')**2+li.norm(X[j]-\
-                                                X_real[num_x_real],'fro')**2
-    return ot.emd(T.reshape([num_T]),T_real.reshape([num_T_real]),M)
+                    M[i*num_X+j,k*num_x_real+l]=(li.norm(Y[i]-Y[k], ord = 2)**2
+                                                 + li.norm(X[j]- X_real[l],ord = 2)**2)
+
+    return ot.emd(T.reshape([num_T]).getA1(),T_real.reshape([num_T_real]),M)
 
 
 

@@ -23,7 +23,7 @@ def get_val(x,y,z,t,r):
     return np.trace(yyt) - 2 * np.trace(t .dot(xyt))+np.trace((t.T.dot(t)).dot(xxt))+np.trace(r.dot(m.T))
 
 
-def update_t_r(x,y,z,t,r,opts,lam):
+def update_t_r(x,y,z,t,r,opts,tv_scale_lam):
     '''
     Update t and r by admm.
     :param x: The centroids.                           [n,m] array
@@ -83,10 +83,10 @@ def update_t_r(x,y,z,t,r,opts,lam):
     iter = 0
 
     while iter < max_iter:
-        print(np.shape(gradient_t(t)))
+        # print(np.shape(gradient_t(t)))
 
         # Update t
-        t = np.multiply(t,np.exp(-alpha1*(gradient_t(t)+lam*gradient_tv(t))))
+        t = np.multiply(t,np.exp(-alpha1*(gradient_t(t)+tv_scale_lam*gradient_tv(t))))
         t = t/np.sum(t,1).reshape([n_grids,1])
 
         # Update r
